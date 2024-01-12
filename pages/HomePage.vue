@@ -30,7 +30,14 @@ function enterVote() {
   candidateStore.enterVotes(candidateFirstChecked, candidateSecondChecked);
   voteCount.value++;
 
+  if (changingBallotPaper.value.id != undefined) {
+    changingBallotPaper.value.invalid = true;
+
+    changingBallotPaper.value = {} as BallotPaper;
+  }
+
   ballotStore.addBallotPaper(candidateFirstChecked, candidateSecondChecked)
+
 
 
   resetVote();
@@ -58,18 +65,21 @@ function selectedTwoPoints(candidate: Candidate) {
 }
 
 function changePaper(paper: BallotPaper) {
-  // TODO show which are currently selected and what you are currently doing
-  // TODO display currently changing or something
-
   if (isVoteReady()) return;
+  if (changingBallotPaper.value.id != undefined) return;
+
+  changingBallotPaper.value = paper;
 
   if (paper.firstCandidate != undefined) {
     paper.firstCandidate.onePointChecked = true;
     selectedOnePoint(paper.firstCandidate);
+    paper.firstCandidate.punkte--;
   }
   if (paper.secondCandidate != undefined) {
     paper.secondCandidate.twoPointChecked = true;
     selectedTwoPoints(paper.secondCandidate)
+    paper.secondCandidate.punkte -= 2;
+    paper.secondCandidate.platz1--;
   }
 }
 
@@ -81,6 +91,8 @@ let candidateSecondChecked: Candidate | undefined;
 
 let voteCount = ref(0);
 
+let changingBallotPaper = ref({} as BallotPaper);
+
 
 </script>
 
@@ -90,6 +102,13 @@ let voteCount = ref(0);
       <InputComponent :vote-count="voteCount" @add-candidate="args => addCandidate(args)"></InputComponent>
     </div>
     <div id="candidateContainer">
+      <div id="headerContainer">
+        <h1>Current action:</h1>
+        <h1>{{
+            changingBallotPaper.id != undefined ? "Changing Paper with number: " + changingBallotPaper.number : "Voting"
+          }}</h1>
+      </div>
+
       <candidate-component v-for="candidate in candidateStore.candidates"
                            :vote-count="voteCount" :candidate="candidate"
                            @delete="args => deleteCandidate(args)"
@@ -130,11 +149,6 @@ let voteCount = ref(0);
   justify-self: center;
 }
 
-#candidateList {
-  list-style: none;
-  padding: 0;
-}
-
 #candidateContainer {
   display: flex;
   flex-direction: column;
@@ -149,6 +163,17 @@ let voteCount = ref(0);
   border-radius: 10px;
 
   cursor: pointer;
+}
+
+#headerContainer {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  margin: 0;
 }
 
 </style>

@@ -16,13 +16,21 @@ export const useBallotPaperStore = defineStore("ballotPapers", {
         addBallotPaper(firstCandidate: Candidate | undefined, secondCandidate: Candidate | undefined) {
             this.ballotPapers.push({
                 id: this.current_id,
+                number: 1 + getValidPapers(this.ballotPapers).length,
                 firstCandidate: firstCandidate,
-                secondCandidate: secondCandidate
+                secondCandidate: secondCandidate,
+
+                invalid: false,
             })
             this.current_id++;
+
         },
         deleteBallotPaper(paper: BallotPaper) {
             this.ballotPapers.splice(this.ballotPapers.indexOf(paper));
         }
     }
 })
+
+function getValidPapers(papers: BallotPaper[]) {
+    return papers.filter(value => !value.invalid);
+}

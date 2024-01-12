@@ -8,13 +8,35 @@ const props = defineProps<{
 
 const emit = defineEmits(["change"])
 
+function setPaperInvalid() {
+  props.data.invalid = true;
+  if (props.data.firstCandidate != undefined) {
+    props.data.firstCandidate.punkte--;
+  }
+  if (props.data.secondCandidate != undefined) {
+    props.data.secondCandidate.punkte -= 2;
+    props.data.secondCandidate.platz1--;
+  }
+
+}
+
 </script>
 
 <template>
-  <div id="ballotContainer">
-    <span>{{ data.id }}</span>
-    <span>Erststimme: {{ data.secondCandidate ? data.secondCandidate.name : 'niemand' }} {{ data.secondCandidate ? data.secondCandidate.klasse : '' }}</span>
-    <span>Zweitstimme: {{ data.firstCandidate ? data.firstCandidate.name : 'niemand' }} {{ data.firstCandidate ? data.firstCandidate.klasse : '' }}</span>
+  <div id="ballotContainer" :class="{invalid: data.invalid}">
+    <button @click="setPaperInvalid"
+            id="invalidButton"
+            :disabled="data.invalid">
+      <Icon name="material-symbols:disabled-by-default" size="25"></Icon>
+    </button>
+    <span>ID: {{ data.id }}</span>
+    <span>Number: {{ data.number }}</span>
+    <span>Erststimme: {{
+        data.secondCandidate ? data.secondCandidate.name : 'niemand'
+      }} {{ data.secondCandidate ? data.secondCandidate.klasse : '' }}</span>
+    <span>Zweitstimme: {{
+        data.firstCandidate ? data.firstCandidate.name : 'niemand'
+      }} {{ data.firstCandidate ? data.firstCandidate.klasse : '' }}</span>
 
     <button id="changeButton" @click="emit('change', data)">
       <Icon name="material-symbols:edit" size="20"/>
@@ -48,15 +70,16 @@ const emit = defineEmits(["change"])
   align-self: center;
 }
 
-#voteButton {
-  width: 30%;
-  font-size: large;
-  align-self: center;
-
-  padding: 10px;
-  border-radius: 10px;
-
+#invalidButton {
+  display: block;
+  text-align: center;
+  border: 0;
+  background-color: transparent;
   cursor: pointer;
+}
+
+.invalid {
+  border-color: red !important;
 }
 
 </style>
