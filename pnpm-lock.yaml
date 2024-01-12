@@ -8,6 +8,9 @@ dependencies:
   '@pinia/nuxt':
     specifier: ^0.5.1
     version: 0.5.1(vue@3.4.6)
+  vue3-keypress:
+    specifier: ^4.0.1
+    version: 4.0.1
 
 devDependencies:
   nuxt:
@@ -5637,6 +5640,10 @@ packages:
       '@vue/devtools-api': 6.5.1
       vue: 3.4.6
     dev: true
+
+  /vue3-keypress@4.0.1:
+    resolution: {integrity: sha512-oKxLpVsQq1iosuwi38fbH+K2NL2HqbFT8U7yE1fzxcUB0Mup1vS7OcnNMqkgv+FHFJTNvlYAOwLctVK/ahz6Ng==}
+    dev: false
 
   /vue@3.4.6:
     resolution: {integrity: sha512-gAzw5oP0/h34/yq1LjLNpn4wrCKYMuWp2jbs/JirFiZAFWYhd9jTkXp4wIi5ApgMJrMgD6YFyyXwKsqFYR31IQ==}

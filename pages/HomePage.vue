@@ -4,10 +4,24 @@ import {useCandidateStore} from "~/store/CandidateStore";
 import type {Candidate, CandidateData} from "~/utils/Candidate";
 import {useBallotPaperStore} from "~/store/BallotStore";
 import type {BallotPaper} from "~/utils/BallotPaper";
+import {useKeypress} from "vue3-keypress";
 
 const candidateStore = useCandidateStore();
 const ballotStore = useBallotPaperStore();
 callOnce(() => candidateStore.addExampleCandidate())
+
+useKeypress(
+    {
+      keyEvent: "keydown",
+      keyBinds: [
+        {
+          keyCode: "enter",
+          success: enterVote,
+          preventDefault: false,
+        }
+      ]
+    }
+)
 
 function addCandidate(args: CandidateData) {
   candidateStore.addCandidate({
@@ -26,7 +40,7 @@ function deleteCandidate(candidate: Candidate) {
 }
 
 function enterVote() {
-  if (!isVoteReady()) return;
+  if (!voteReady.value) return;
   candidateStore.enterVotes(candidateFirstChecked, candidateSecondChecked);
   voteCount.value++;
 
@@ -39,12 +53,7 @@ function enterVote() {
   ballotStore.addBallotPaper(candidateFirstChecked, candidateSecondChecked)
 
 
-
   resetVote();
-}
-
-function isVoteReady() {
-  return onePointDisabled.value || twoPointsDisabled.value;
 }
 
 function resetVote() {
@@ -55,17 +64,19 @@ function resetVote() {
 }
 
 function selectedOnePoint(candidate: Candidate) {
+  voteCount.value++;
   onePointDisabled.value = !onePointDisabled.value;
   onePointDisabled ? candidateFirstChecked = candidate : candidateFirstChecked = undefined;
 }
 
 function selectedTwoPoints(candidate: Candidate) {
+  voteCount.value++;
   twoPointsDisabled.value = !twoPointsDisabled.value;
   twoPointsDisabled ? candidateSecondChecked = candidate : candidateSecondChecked = undefined;
 }
 
 function changePaper(paper: BallotPaper) {
-  if (isVoteReady()) return;
+  if (voteReady.value) return;
   if (changingBallotPaper.value.id != undefined) return;
 
   changingBallotPaper.value = paper;
@@ -93,11 +104,15 @@ let voteCount = ref(0);
 
 let changingBallotPaper = ref({} as BallotPaper);
 
+let voteReady = computed(() => {
+  return (twoPointsDisabled.value || onePointDisabled.value);
+});
+
 
 </script>
 
 <template>
-  <div id="mainView">
+  <div id="mainView" @keydown.enter="enterVote">
     <div id="inputContainer">
       <InputComponent :vote-count="voteCount" @add-candidate="args => addCandidate(args)"></InputComponent>
     </div>
@@ -109,6 +124,9 @@ let changingBallotPaper = ref({} as BallotPaper);
           }}</h1>
       </div>
 
+      {{onePointDisabled}}
+      {{ twoPointsDisabled}}
+
       <candidate-component v-for="candidate in candidateStore.candidates"
                            :vote-count="voteCount" :candidate="candidate"
                            @delete="args => deleteCandidate(args)"
@@ -117,13 +135,13 @@ let changingBallotPaper = ref({} as BallotPaper);
                            :one-point-disabled="onePointDisabled"
                            :two-points-disabled="twoPointsDisabled"></candidate-component>
 
-      <button @click="enterVote" id="voteButton">
+      <button @click="enterVote" id="voteButton" :disabled="!voteReady">
         <Icon name="material-symbols:how-to-vote" size="20"/>
         Vote
       </button>
     </div>
     <div id="ballotPaperContainer">
-      <ballot-paper-candidate-component v-for="paper in ballotStore.ballotPapers"
+      <ballot-paper-candidate-component v-for="paper in ballotStore.ballotPapers.reverse()"
                                         @change="args => changePaper(args)"
                                         :data="paper">
 
@@ -163,6 +181,10 @@ let changingBallotPaper = ref({} as BallotPaper);
   border-radius: 10px;
 
   cursor: pointer;
+}
+
+#voteButton:disabled {
+  cursor: default;
 }
 
 #headerContainer {

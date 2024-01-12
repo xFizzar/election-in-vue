@@ -6,24 +6,32 @@ const props = defineProps<{
 
 const emit = defineEmits(["addCandidate"]);
 
-let candidateName: string;
-let candidateClass: string;
+let candidateName = ref("")
+let candidateClass = ref("")
+
+function addCandidate() {
+  emit('addCandidate', {name: candidateName.value, klasse: candidateClass.value})
+  candidateName.value = "";
+  candidateClass.value = "";
+}
 
 </script>
 
 <template>
-  <div id="inputs">
-    <span>Input a new candidate: </span>
-    <br>
-    <label>Candidate Name: </label>
-    <input placeholder="Candidate Name" v-model="candidateName">
-    <br>
-    <label>Candidate Class: </label>
-    <input placeholder="Class" v-model="candidateClass">
-    <button @click="emit('addCandidate', {name: candidateName, klasse: candidateClass})" :disabled="voteCount > 0" id="addButton">
-      <Icon name="material-symbols:add-box" size="32"></Icon>
-    </button>
-  </div>
+  <form onsubmit="return false" @submit="addCandidate">
+    <div id="inputs">
+      <span>Input a new candidate: </span>
+      <br>
+      <label>Candidate Name: </label>
+      <input placeholder="Candidate Name" v-model="candidateName">
+      <br>
+      <label>Candidate Class: </label>
+      <input placeholder="Class" v-model="candidateClass">
+      <button type="submit" :disabled="voteCount > 0" id="addButton">
+        <Icon name="material-symbols:add-box" size="32"></Icon>
+      </button>
+    </div>
+  </form>
 </template>
 
 <style scoped>
@@ -36,13 +44,15 @@ let candidateClass: string;
   display: flex;
   flex-direction: column;
 }
-#addButton{
+
+#addButton {
   background: transparent;
   border: 0;
   margin: 5px;
   cursor: pointer;
 }
-#addButton:disabled{
+
+#addButton:disabled {
   cursor: default;
 }
 </style>
