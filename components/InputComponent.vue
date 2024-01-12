@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 const props = defineProps<{
-  voteCount: number;
+  voteStarted: boolean;
 }>()
 
 const emit = defineEmits(["addCandidate"]);
@@ -27,7 +27,7 @@ function addCandidate() {
       <br>
       <label>Candidate Class: </label>
       <input placeholder="Class" v-model="candidateClass">
-      <button type="submit" :disabled="voteCount > 0" id="addButton">
+      <button type="submit" :disabled="voteStarted" id="addButton">
         <Icon name="material-symbols:add-box" size="32"></Icon>
       </button>
     </div>

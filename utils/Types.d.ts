@@ -1,3 +1,4 @@
+
 export interface Candidate{
     c_id: number;
 
@@ -13,4 +14,16 @@ export interface Candidate{
 export interface CandidateData{
     name: string;
     klasse: string;
+}
+
+export interface BallotPaper {
+
+    id: number;
+    number: number;
+
+    firstCandidate: Candidate | undefined;
+    secondCandidate: Candidate | undefined;
+
+    invalid: boolean;
+
 }

@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import type {Candidate} from "~/utils/Candidate";
+import type {Candidate} from "~/utils/Types";
 
 
 interface State {
@@ -21,19 +21,6 @@ export const useCandidateStore = defineStore("logEntries", {
         },
         deleteCandidate(candidate: Candidate) {
             this.candidates.splice(this.candidates.indexOf(candidate), 1);
-        },
-        enterVotes(cand1: Candidate | undefined, cand2: Candidate | undefined) {
-            if (cand1 !== undefined) {
-                cand1.punkte++;
-                cand1.onePointChecked = false;
-            }
-
-            if (cand2 !== undefined) {
-                cand2.punkte += 2;
-                cand2.platz1++;
-                cand2.twoPointChecked = false;
-            }
-
         },
 
         addExampleCandidate() {

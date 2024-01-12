@@ -1,6 +1,5 @@
 import {defineStore} from "pinia"
-import type {BallotPaper} from "~/utils/BallotPaper";
-import type {Candidate} from "~/utils/Candidate";
+import type {BallotPaper, Candidate} from "~/utils/Types";
 
 interface State {
     current_id: number;
@@ -12,6 +11,11 @@ export const useBallotPaperStore = defineStore("ballotPapers", {
         current_id: 1,
         ballotPapers: [],
     }),
+    getters: {
+        getValidVoteCount: state => getValidPapers(state.ballotPapers).length,
+        getTotalVoteCount: state => state.ballotPapers.length,
+        getReversedBallotPapers: state => [...state.ballotPapers].reverse()
+    },
     actions: {
         addBallotPaper(firstCandidate: Candidate | undefined, secondCandidate: Candidate | undefined) {
             this.ballotPapers.push({

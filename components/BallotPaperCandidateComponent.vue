@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
-import type {BallotPaper} from "~/utils/BallotPaper";
+
+import type {BallotPaper} from "~/utils/Types";
 
 const props = defineProps<{
   data: BallotPaper

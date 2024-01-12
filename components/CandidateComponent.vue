@@ -1,12 +1,13 @@
 <script setup lang="ts">
 
-import type {Candidate} from "~/utils/Candidate";
+
+import type {Candidate} from "~/utils/Types";
 
 const props = defineProps<{
   candidate: Candidate,
   twoPointsDisabled: boolean,
   onePointDisabled: boolean,
-  voteCount: number
+  voteStarted: boolean
 }>()
 
 const emit = defineEmits(["delete", "selected2", "selected1"])
@@ -26,7 +27,7 @@ function clickedOnTwoPoints() {
 
 
     <button @click="emit('delete', candidate)"
-        :disabled="voteCount > 0" id="deleteButton">
+            :disabled="voteStarted" id="deleteButton">
       <Icon name="material-symbols:delete-forever" size="25"></Icon>
     </button>
     <span>{{ candidate.c_id }}</span>
@@ -71,6 +72,10 @@ function clickedOnTwoPoints() {
   border: 0;
   background-color: transparent;
   cursor: pointer;
+}
+
+#deleteButton:disabled {
+  cursor: default;
 }
 
 </style>
