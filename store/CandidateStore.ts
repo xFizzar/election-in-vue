@@ -27,6 +27,16 @@ export const useCandidateStore = defineStore("logEntries", {
             let cand: Candidate[] = [
                 {
                     c_id: 0,
+                    name: "Fabian Götz",
+                    klasse: "4AHIF",
+                    platz1: 0,
+                    punkte: 0,
+
+                    onePointChecked: false,
+                    twoPointChecked: false,
+                },
+                {
+                    c_id: 0,
                     name: "Benedikt Huff",
                     klasse: "4AHIF",
                     platz1: 0,

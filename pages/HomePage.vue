@@ -61,10 +61,14 @@ function setBallotPaperInvalid() {
   changingBallotPaper.value.invalid = true;
 }
 
+function changingModeActive() {
+  return changingBallotPaper.value.id != undefined;
+}
+
 function enterVote() {
   addPoints();
 
-  if (changingBallotPaper.value.id != undefined) {
+  if (changingModeActive()) {
     setBallotPaperInvalid();
   }
 
@@ -120,8 +124,7 @@ function loadStateFromBallotPaper(paper: BallotPaper) {
 }
 
 function changePaper(paper: BallotPaper) {
-  if (voteReady.value) return;
-  if (changingBallotPaper.value.id != undefined) return;
+  if (voteReady.value || changingModeActive()) return;
 
   changingBallotPaper.value = paper;
 
@@ -186,9 +189,7 @@ let voteStarted = ref(false);
     <div id="ballotPaperContainer">
       <ballot-paper-candidate-component v-for="paper in ballotStore.getReversedBallotPapers"
                                         @change="args => changePaper(args)"
-                                        :data="paper">
-
-      </ballot-paper-candidate-component>
+                                        :data="paper"/>
     </div>
   </div>
 
@@ -222,6 +223,7 @@ let voteStarted = ref(false);
   align-self: center;
 
   padding: 10px;
+  margin: 10px;
   border-radius: 10px;
 
   cursor: pointer;
@@ -249,7 +251,7 @@ h1, h3 {
 }
 
 #candidateListContainer {
-  height: 58vh;
+  height: 60vh;
   overflow: scroll;
   overflow-x: hidden;
 }
