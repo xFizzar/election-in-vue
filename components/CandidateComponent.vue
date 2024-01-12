@@ -7,7 +7,8 @@ const props = defineProps<{
   candidate: Candidate,
   twoPointsDisabled: boolean,
   onePointDisabled: boolean,
-  voteStarted: boolean
+  voteStarted: boolean,
+  showDeleteButton: boolean;
 }>()
 
 const emit = defineEmits(["delete", "selected2", "selected1"])
@@ -26,14 +27,12 @@ function clickedOnTwoPoints() {
   <div id="candidateContainer">
 
 
-    <button @click="emit('delete', candidate)"
+    <button v-if="showDeleteButton" @click="emit('delete', candidate)"
             :disabled="voteStarted" id="deleteButton">
       <Icon name="material-symbols:delete-forever" size="25"></Icon>
     </button>
-    <span>{{ candidate.c_id }}</span>
-    <span> {{ candidate.name }} {{ candidate.klasse }}</span>
-    <span>Erststimmen: {{ candidate.platz1 }}</span>
-    <span>Gesamtpunkte: {{ candidate.punkte }}</span>
+    <span>{{ candidate.c_id }}: {{ candidate.name }} {{ candidate.klasse }}</span>
+    <span>Punkte: {{ candidate.punkte }}; Erststimmen: {{ candidate.platz1 }}</span>
 
     <span>Erststimme:
     <input type="checkbox" :disabled="(twoPointsDisabled && !candidate.twoPointChecked) || candidate.onePointChecked"
@@ -46,7 +45,6 @@ function clickedOnTwoPoints() {
            @click="clickedOnOnePoint"
            v-model="candidate.onePointChecked">
       </span>
-    <br>
   </div>
 
 </template>
@@ -63,6 +61,7 @@ function clickedOnTwoPoints() {
   border-radius: 20px;
   display: flex;
   flex-direction: column;
+  padding: 5px;
 
 }
 

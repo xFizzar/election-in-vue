@@ -9,6 +9,16 @@ const candidateStore = useCandidateStore();
 const ballotStore = useBallotPaperStore();
 callOnce(() => candidateStore.addExampleCandidate())
 
+const invalidCandidate = ref({
+  c_id: 0,
+  name: "ungültige Stimme",
+  klasse: "",
+  punkte: 0,
+  platz1: 0,
+  twoPointChecked: false,
+  onePointChecked: false,
+} as Candidate)
+
 useKeypress({
       keyEvent: "keydown",
       keyBinds: [
@@ -79,15 +89,15 @@ function resetVote() {
 
 function selectedOnePoint(candidate: Candidate) {
   setVoteStarted()
-  // onePointDisabled.value = !onePointDisabled.value;
-  onePointDisabled.value = !candidate.onePointChecked;
+  onePointDisabled.value = !onePointDisabled.value;
+  // onePointDisabled.value = !candidate.onePointChecked;
   onePointDisabled ? candidateFirstChecked = candidate : candidateFirstChecked = undefined;
 }
 
 function selectedTwoPoints(candidate: Candidate) {
   setVoteStarted()
-  // twoPointsDisabled.value = !twoPointsDisabled.value;
-  twoPointsDisabled.value = !candidate.twoPointChecked;
+  twoPointsDisabled.value = !twoPointsDisabled.value;
+  // twoPointsDisabled.value = !candidate.twoPointChecked;
   twoPointsDisabled ? candidateSecondChecked = candidate : candidateSecondChecked = undefined;
 }
 
@@ -150,15 +160,25 @@ let voteStarted = ref(false);
         <h3>Total Votes: {{ ballotStore.getTotalVoteCount }}</h3>
       </div>
 
-      <candidate-component v-for="candidate in candidateStore.candidates"
-                           :vote-started="voteStarted" :candidate="candidate"
-                           @delete="args => deleteCandidate(args)"
-                           @selected1="selectedOnePoint(candidate)"
-                           @selected2="selectedTwoPoints(candidate)"
+      <candidate-component :candidate="invalidCandidate"
+                           :vote-started="true"
+                           :show-delete-button="false"
+                           @selected1="selectedOnePoint(invalidCandidate)"
+                           @selected2="selectedTwoPoints(invalidCandidate)"
                            :one-point-disabled="onePointDisabled"
-                           :two-points-disabled="twoPointsDisabled"></candidate-component>
+                           :two-points-disabled="twoPointsDisabled"/>
 
-      <button @click="enterVote" id="voteButton"> <!-- :disabled="!voteReady" -->
+      <div id="candidateListContainer">
+        <candidate-component v-for="candidate in candidateStore.candidates"
+                             :vote-started="voteStarted" :candidate="candidate"
+                             :show-delete-button="true"
+                             @delete="args => deleteCandidate(args)"
+                             @selected1="selectedOnePoint(candidate)"
+                             @selected2="selectedTwoPoints(candidate)"
+                             :one-point-disabled="onePointDisabled"
+                             :two-points-disabled="twoPointsDisabled"/>
+      </div>
+      <button @click="enterVote" id="voteButton" :disabled="!voteReady">
         <Icon name="material-symbols:how-to-vote" size="20"/>
         Vote
       </button>
@@ -193,6 +213,7 @@ let voteStarted = ref(false);
 #candidateContainer {
   display: flex;
   flex-direction: column;
+
 }
 
 #voteButton {
@@ -219,6 +240,28 @@ let voteStarted = ref(false);
 
 h1, h3 {
   margin: 0;
+}
+
+#ballotPaperContainer {
+  height: 95vh;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+
+#candidateListContainer {
+  height: 58vh;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+
+#candidateListContainer::-webkit-scrollbar {
+  //display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+#candidateListContainer {
+  //-ms-overflow-style: none; /* IE and Edge */
+  //scrollbar-width: none; /* Firefox */
 }
 
 </style>
