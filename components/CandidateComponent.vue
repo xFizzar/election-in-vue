@@ -8,7 +8,8 @@ const props = defineProps<{
   twoPointsDisabled: boolean,
   onePointDisabled: boolean,
   voteStarted: boolean,
-  showDeleteButton: boolean;
+  showDeleteButton: boolean,
+  bothClickable: boolean,
 }>()
 
 const emit = defineEmits(["delete", "selected2", "selected1"])
@@ -35,13 +36,15 @@ function clickedOnTwoPoints() {
     <span>Punkte: {{ candidate.punkte }}; Erststimmen: {{ candidate.platz1 }}</span>
 
     <span>Erststimme:
-    <input type="checkbox" :disabled="(twoPointsDisabled && !candidate.twoPointChecked) || candidate.onePointChecked"
+    <input type="checkbox"
+           :disabled="(twoPointsDisabled && !candidate.twoPointChecked) || (!bothClickable && candidate.onePointChecked)"
            @click="clickedOnTwoPoints"
            v-model="candidate.twoPointChecked">
     </span>
 
     <span>Zweitstimme:
-    <input type="checkbox" :disabled="(onePointDisabled && !candidate.onePointChecked) || candidate.twoPointChecked"
+    <input type="checkbox"
+           :disabled="(onePointDisabled && !candidate.onePointChecked) || (!bothClickable && candidate.twoPointChecked)"
            @click="clickedOnOnePoint"
            v-model="candidate.onePointChecked">
       </span>

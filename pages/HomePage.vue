@@ -169,7 +169,8 @@ let voteStarted = ref(false);
                            @selected1="selectedOnePoint(invalidCandidate)"
                            @selected2="selectedTwoPoints(invalidCandidate)"
                            :one-point-disabled="onePointDisabled"
-                           :two-points-disabled="twoPointsDisabled"/>
+                           :two-points-disabled="twoPointsDisabled"
+                           :both-clickable="true"/>
 
       <div id="candidateListContainer">
         <candidate-component v-for="candidate in candidateStore.candidates"
@@ -179,7 +180,8 @@ let voteStarted = ref(false);
                              @selected1="selectedOnePoint(candidate)"
                              @selected2="selectedTwoPoints(candidate)"
                              :one-point-disabled="onePointDisabled"
-                             :two-points-disabled="twoPointsDisabled"/>
+                             :two-points-disabled="twoPointsDisabled"
+                             :both-clickable="false"/>
       </div>
       <button @click="enterVote" id="voteButton" :disabled="!voteReady">
         <Icon name="material-symbols:how-to-vote" size="20"/>
