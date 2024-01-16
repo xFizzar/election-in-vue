@@ -4,6 +4,7 @@ import {useCandidateStore} from "~/store/CandidateStore";
 import {useBallotPaperStore} from "~/store/BallotStore";
 import {useKeypress} from "vue3-keypress";
 import type {BallotPaper, Candidate, CandidateData} from "~/utils/Types";
+import * as fs from "fs";
 
 const candidateStore = useCandidateStore();
 const ballotStore = useBallotPaperStore();
@@ -48,13 +49,10 @@ function deleteCandidate(candidate: Candidate) {
 }
 
 function addPoints() {
-  if (candidateFirstChecked != undefined) {
-    candidateFirstChecked.punkte++;
-  }
-  if (candidateSecondChecked != undefined) {
-    candidateSecondChecked.punkte += 2;
-    candidateSecondChecked.platz1++;
-  }
+  candidateFirstChecked.punkte++;
+
+  candidateSecondChecked.punkte += 2;
+  candidateSecondChecked.platz1++;
 }
 
 function setBallotPaperInvalid() {
@@ -81,28 +79,27 @@ function resetVote() {
   onePointDisabled.value = false;
   twoPointsDisabled.value = false;
 
-  candidateFirstChecked !== undefined ? candidateFirstChecked.onePointChecked = false : null;
-  candidateSecondChecked !== undefined ? candidateSecondChecked.twoPointChecked = false : null;
+  candidateFirstChecked.onePointChecked = false;
+  candidateSecondChecked.twoPointChecked = false;
 
-  candidateFirstChecked = undefined;
-  candidateSecondChecked = undefined;
+  candidateFirstChecked = invalidCandidate.value;
+  candidateSecondChecked = invalidCandidate.value;
 
   changingBallotPaper.value = {} as BallotPaper;
-
 }
 
 function selectedOnePoint(candidate: Candidate) {
   setVoteStarted()
   onePointDisabled.value = !onePointDisabled.value;
   // onePointDisabled.value = !candidate.onePointChecked;
-  onePointDisabled ? candidateFirstChecked = candidate : candidateFirstChecked = undefined;
+  onePointDisabled ? candidateFirstChecked = candidate : candidateFirstChecked = invalidCandidate.value;
 }
 
 function selectedTwoPoints(candidate: Candidate) {
   setVoteStarted()
   twoPointsDisabled.value = !twoPointsDisabled.value;
   // twoPointsDisabled.value = !candidate.twoPointChecked;
-  twoPointsDisabled ? candidateSecondChecked = candidate : candidateSecondChecked = undefined;
+  twoPointsDisabled ? candidateSecondChecked = candidate : candidateSecondChecked = invalidCandidate.value;
 }
 
 function setVoteStarted() {
@@ -110,6 +107,7 @@ function setVoteStarted() {
 }
 
 function loadStateFromBallotPaper(paper: BallotPaper) {
+
   if (paper.firstCandidate != undefined) {
     paper.firstCandidate.onePointChecked = true;
     selectedOnePoint(paper.firstCandidate);
@@ -135,8 +133,8 @@ function changePaper(paper: BallotPaper) {
 let onePointDisabled = ref(false);
 let twoPointsDisabled = ref(false);
 
-let candidateFirstChecked: Candidate | undefined;
-let candidateSecondChecked: Candidate | undefined;
+let candidateFirstChecked: Candidate = invalidCandidate.value;
+let candidateSecondChecked: Candidate = invalidCandidate.value;
 
 let changingBallotPaper = ref({} as BallotPaper);
 
@@ -146,12 +144,55 @@ let voteReady = computed(() => {
 let voteStarted = ref(false);
 
 
+// Just temporary in here
+// then separate for SRP
+
+function downloadJsonFile(filename: string, data: any[]) {
+
+
+  let Json = JSON.stringify(data, null, 2);
+
+  const blob = new Blob([Json], {type: 'application/json'})
+
+  const link = document.createElement('a');
+
+  // Set the link's attributes
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+
+  // Trigger the click event on the link to start the download
+  link.click();
+}
+
+function exportData() {
+  const copy = [...candidateStore.candidates];
+
+  copy.splice(0, 0, invalidCandidate.value);
+
+  downloadJsonFile("votes.json", copy);
+  downloadJsonFile("ballotPapers.json", ballotStore.ballotPapers);
+}
+
+function exportVotes() {
+  const copy = [...candidateStore.candidates];
+
+  copy.splice(0, 0, invalidCandidate.value);
+
+  downloadJsonFile("votes.json", copy);
+}
+
+function exportBallotPapers() {
+  downloadJsonFile("ballotPapers.json", ballotStore.ballotPapers);
+}
+
 </script>
 
 <template>
-  <div id="mainView" @keydown.enter="enterVote">
+  <div id="mainView">
     <div id="inputContainer">
       <InputComponent :vote-started="voteStarted" @add-candidate="args => addCandidate(args)"></InputComponent>
+      <button @click="exportVotes">Export Votes</button>
+      <button @click="exportBallotPapers">Export Ballot Papers</button>
     </div>
     <div id="candidateContainer">
       <div id="headerContainer">
