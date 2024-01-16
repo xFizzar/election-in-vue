@@ -149,8 +149,7 @@ let voteStarted = ref(false);
 
 function downloadJsonFile(filename: string, data: any[]) {
 
-
-  let Json = JSON.stringify(data, null, 2);
+  const Json = JSON.stringify(data, null, 2);
 
   const blob = new Blob([Json], {type: 'application/json'})
 
@@ -162,15 +161,6 @@ function downloadJsonFile(filename: string, data: any[]) {
 
   // Trigger the click event on the link to start the download
   link.click();
-}
-
-function exportData() {
-  const copy = [...candidateStore.candidates];
-
-  copy.splice(0, 0, invalidCandidate.value);
-
-  downloadJsonFile("votes.json", copy);
-  downloadJsonFile("ballotPapers.json", ballotStore.ballotPapers);
 }
 
 function exportVotes() {
@@ -185,6 +175,29 @@ function exportBallotPapers() {
   downloadJsonFile("ballotPapers.json", ballotStore.ballotPapers);
 }
 
+function handleFileChange(event: any) {
+  selectedFile = event.target.files[0];
+}
+
+function importData() {
+  if (selectedFile) {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        const importedData = JSON.parse(reader.result);
+        console.log(importedData)
+      }
+    };
+    reader.readAsText(selectedFile);
+  } else {
+    console.error('No file selected');
+  }
+
+}
+
+let selectedFile: File;
+
 </script>
 
 <template>
@@ -193,6 +206,9 @@ function exportBallotPapers() {
       <InputComponent :vote-started="voteStarted" @add-candidate="args => addCandidate(args)"></InputComponent>
       <button @click="exportVotes">Export Votes</button>
       <button @click="exportBallotPapers">Export Ballot Papers</button>
+      <br>
+      <input type="file" @change="handleFileChange($event)"/>
+      <button @click="importData">Import Data</button>
     </div>
     <div id="candidateContainer">
       <div id="headerContainer">
