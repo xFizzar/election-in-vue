@@ -17,16 +17,19 @@ export const useBallotPaperStore = defineStore("ballotPapers", {
         getReversedBallotPapers: state => [...state.ballotPapers].reverse()
     },
     actions: {
-        addBallotPaper(firstCandidate: Candidate | undefined, secondCandidate: Candidate | undefined) {
-            this.ballotPapers.push({
+        addBallotPaper(firstCandidate: Candidate | undefined, secondCandidate: Candidate | undefined): BallotPaper {
+            const ballotPaper = {
                 id: this.current_id,
                 number: 1 + getValidPapers(this.ballotPapers).length,
                 firstCandidate: firstCandidate,
                 secondCandidate: secondCandidate,
 
                 invalid: false,
-            })
+            }
+            this.ballotPapers.push(ballotPaper)
             this.current_id++;
+
+            return ballotPaper;
 
         },
         deleteBallotPaper(paper: BallotPaper) {

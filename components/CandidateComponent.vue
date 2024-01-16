@@ -7,7 +7,6 @@ const props = defineProps<{
   candidate: Candidate,
   twoPointsDisabled: boolean,
   onePointDisabled: boolean,
-  voteStarted: boolean,
   showDeleteButton: boolean,
   bothClickable: boolean,
 }>()
@@ -29,7 +28,7 @@ function clickedOnTwoPoints() {
 
 
     <button v-if="showDeleteButton" @click="emit('delete', candidate)"
-            :disabled="voteStarted" id="deleteButton">
+            id="deleteButton">
       <Icon name="material-symbols:delete-forever" size="25"></Icon>
     </button>
     <span>{{ candidate.c_id }}: {{ candidate.name }} {{ candidate.klasse }}</span>

@@ -1,5 +1,4 @@
-
-export interface Candidate{
+export interface Candidate {
     c_id: number;
 
     name: string;
@@ -11,7 +10,7 @@ export interface Candidate{
     twoPointChecked: boolean;
 }
 
-export interface CandidateData{
+export interface CandidateData {
     name: string;
     klasse: string;
 }

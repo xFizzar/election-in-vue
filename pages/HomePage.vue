@@ -3,8 +3,8 @@
 import {useCandidateStore} from "~/store/CandidateStore";
 import {useBallotPaperStore} from "~/store/BallotStore";
 import {useKeypress} from "vue3-keypress";
+import {currentAction} from "~/utils/CurrentAction";
 import type {BallotPaper, Candidate, CandidateData} from "~/utils/Types";
-import * as fs from "fs";
 
 const candidateStore = useCandidateStore();
 const ballotStore = useBallotPaperStore();
@@ -55,8 +55,8 @@ function addPoints() {
   candidateSecondChecked.platz1++;
 }
 
-function setBallotPaperInvalid() {
-  changingBallotPaper.value.invalid = true;
+function setBallotPaperInvalid(paper: any) {
+  paper.invalid = true;
 }
 
 function changingModeActive() {
@@ -64,10 +64,22 @@ function changingModeActive() {
 }
 
 function enterVote() {
+  if (currentMode.value != currentAction.VOTING) return;
+
+  if (candidateFirstChecked === invalidCandidate.value && candidateSecondChecked === invalidCandidate.value) {
+    const paper = ballotStore.addBallotPaper(candidateFirstChecked, candidateSecondChecked);
+    setBallotPaperInvalid(paper);
+    if (changingModeActive()) {
+      setBallotPaperInvalid(changingBallotPaper.value);
+    }
+    resetVote();
+    return;
+  }
+
   addPoints();
 
   if (changingModeActive()) {
-    setBallotPaperInvalid();
+    setBallotPaperInvalid(changingBallotPaper.value);
   }
 
   ballotStore.addBallotPaper(candidateFirstChecked, candidateSecondChecked)
@@ -89,21 +101,15 @@ function resetVote() {
 }
 
 function selectedOnePoint(candidate: Candidate) {
-  setVoteStarted()
   onePointDisabled.value = !onePointDisabled.value;
   // onePointDisabled.value = !candidate.onePointChecked;
   onePointDisabled ? candidateFirstChecked = candidate : candidateFirstChecked = invalidCandidate.value;
 }
 
 function selectedTwoPoints(candidate: Candidate) {
-  setVoteStarted()
   twoPointsDisabled.value = !twoPointsDisabled.value;
   // twoPointsDisabled.value = !candidate.twoPointChecked;
   twoPointsDisabled ? candidateSecondChecked = candidate : candidateSecondChecked = invalidCandidate.value;
-}
-
-function setVoteStarted() {
-  !voteStarted.value ? voteStarted.value = true : undefined;
 }
 
 function loadStateFromBallotPaper(paper: BallotPaper) {
@@ -128,21 +134,6 @@ function changePaper(paper: BallotPaper) {
 
   loadStateFromBallotPaper(paper);
 }
-
-
-let onePointDisabled = ref(false);
-let twoPointsDisabled = ref(false);
-
-let candidateFirstChecked: Candidate = invalidCandidate.value;
-let candidateSecondChecked: Candidate = invalidCandidate.value;
-
-let changingBallotPaper = ref({} as BallotPaper);
-
-let voteReady = computed(() => {
-  return (twoPointsDisabled.value || onePointDisabled.value);
-});
-let voteStarted = ref(false);
-
 
 // Just temporary in here
 // then separate for SRP
@@ -196,19 +187,39 @@ function importData() {
 
 }
 
+let onePointDisabled = ref(false);
+let twoPointsDisabled = ref(false);
+
+let candidateFirstChecked: Candidate = invalidCandidate.value;
+let candidateSecondChecked: Candidate = invalidCandidate.value;
+
+let changingBallotPaper = ref({} as BallotPaper);
+
+let voteReady = computed(() => {
+  return (twoPointsDisabled.value || onePointDisabled.value);
+});
+
 let selectedFile: File;
+
+let currentMode = ref(currentAction.CREATING);
 
 </script>
 
 <template>
   <div id="mainView">
     <div id="inputContainer">
-      <InputComponent :vote-started="voteStarted" @add-candidate="args => addCandidate(args)"></InputComponent>
-      <button @click="exportVotes">Export Votes</button>
-      <button @click="exportBallotPapers">Export Ballot Papers</button>
+      <InputComponent @add-candidate="args => addCandidate(args)"
+                      v-if="currentMode == currentAction.CREATING"/>
       <br>
-      <input type="file" @change="handleFileChange($event)"/>
-      <button @click="importData">Import Data</button>
+      <button @click="currentMode = currentAction.VOTING">Start Vote</button>
+      <button @click="currentMode = currentAction.EXPORTING">End Vote</button>
+      <br>
+      <br>
+      <import-settings-component v-if="currentMode == currentAction.EXPORTING"
+                                 @exportVotes="exportVotes"
+                                 @exportBallotPapers="exportBallotPapers"
+                                 @handleFileChange="handleFileChange"
+                                 @importData="importData"></import-settings-component>
     </div>
     <div id="candidateContainer">
       <div id="headerContainer">
@@ -221,7 +232,6 @@ let selectedFile: File;
       </div>
 
       <candidate-component :candidate="invalidCandidate"
-                           :vote-started="true"
                            :show-delete-button="false"
                            @selected1="selectedOnePoint(invalidCandidate)"
                            @selected2="selectedTwoPoints(invalidCandidate)"
@@ -231,8 +241,8 @@ let selectedFile: File;
 
       <div id="candidateListContainer">
         <candidate-component v-for="candidate in candidateStore.candidates"
-                             :vote-started="voteStarted" :candidate="candidate"
-                             :show-delete-button="true"
+                             :candidate="candidate"
+                             :show-delete-button="currentMode == currentAction.CREATING"
                              @delete="args => deleteCandidate(args)"
                              @selected1="selectedOnePoint(candidate)"
                              @selected2="selectedTwoPoints(candidate)"
@@ -240,12 +250,12 @@ let selectedFile: File;
                              :two-points-disabled="twoPointsDisabled"
                              :both-clickable="false"/>
       </div>
-      <button @click="enterVote" id="voteButton" :disabled="!voteReady">
+      <button @click="enterVote" id="voteButton" :disabled="!voteReady || currentMode != currentAction.VOTING">
         <Icon name="material-symbols:how-to-vote" size="20"/>
         Vote
       </button>
     </div>
-    <div id="ballotPaperContainer">
+    <div id="ballotPaperContainer" v-if="currentMode == currentAction.VOTING || currentMode == currentAction.EXPORTING">
       <ballot-paper-candidate-component v-for="paper in ballotStore.getReversedBallotPapers"
                                         @change="args => changePaper(args)"
                                         :data="paper"/>
