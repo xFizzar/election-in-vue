@@ -125,7 +125,7 @@ let voteReady = computed(() => {
 </script>
 
 <template>
-  <div id="candidateContainer">
+  <div id="mainContainer">
     <div id="headerContainer">
       <h1>Current action:</h1>
       <h1>{{

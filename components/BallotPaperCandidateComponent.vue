@@ -33,7 +33,7 @@ let changing = ref(false);
 
 <template>
   <div id="ballotContainer" :class="{invalid: data.invalid}">
-    <div v-if="hideIrrelevantThings">
+    <div v-if="!hideIrrelevantThings">
       <button @click="setPaperInvalid"
               id="invalidButton"
               :disabled="data.invalid || changing">
@@ -49,7 +49,7 @@ let changing = ref(false);
         data.firstCandidate ? data.firstCandidate.name : 'niemand'
       }} {{ data.firstCandidate ? data.firstCandidate.klasse : '' }}</span>
 
-    <div v-if="hideIrrelevantThings">
+    <div v-if="!hideIrrelevantThings">
       <button id="changeButton" @click="change(data)" :disabled="data.invalid">
         <Icon name="material-symbols:edit" size="20"/>
         Change
@@ -59,6 +59,9 @@ let changing = ref(false);
 </template>
 
 <style scoped>
+* {
+  font-family: Bahnschrift, serif;
+}
 
 #ballotContainer {
   text-align: center;
@@ -68,10 +71,10 @@ let changing = ref(false);
   display: flex;
   flex-direction: column;
 
+  align-items: center;
 }
 
 #changeButton {
-  width: 30%;
   margin: 5px;
   display: block;
   text-align: center;

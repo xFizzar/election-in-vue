@@ -52,7 +52,7 @@ let selectedFile: File;
   <div id="inputContainer">
     <InputComponent @add-candidate="args => addCandidate(args)"/>
     <br>
-    <button>
+    <button id="toNextPage">
       <NuxtLink to="/VotingPage">Start Vote</NuxtLink>
     </button>
     <br>
@@ -61,10 +61,11 @@ let selectedFile: File;
         @handleFileChange="handleFileChange"
         @importData="importData"></import-settings-component>
 
-    <CandidateList :show-invalid-candidate="false" :show-delete-button="true" :hide-points="true"
-                   :hide-voting-options="true" @delete="(args) => deleteCandidate(args)">
-    </CandidateList>
+
   </div>
+  <CandidateList :show-invalid-candidate="false" :show-delete-button="true" :hide-points="true"
+                 :hide-voting-options="true" @delete="(args) => deleteCandidate(args)">
+  </CandidateList>
 
 </template>
 
@@ -72,5 +73,11 @@ let selectedFile: File;
 * {
   font-family: Bahnschrift, serif;
 }
+
+#inputContainer {
+  width: 40%;
+  float: left;
+}
+
 
 </style>
