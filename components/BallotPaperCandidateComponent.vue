@@ -4,7 +4,8 @@
 import type {BallotPaper} from "~/utils/Types";
 
 const props = defineProps<{
-  data: BallotPaper
+  data: BallotPaper,
+  hideIrrelevantThings: boolean,
 }>()
 
 const emit = defineEmits(["change"])
@@ -21,15 +22,24 @@ function setPaperInvalid() {
 
 }
 
+function change(data: BallotPaper) {
+  changing.value = true;
+  emit("change", data)
+}
+
+let changing = ref(false);
+
 </script>
 
 <template>
   <div id="ballotContainer" :class="{invalid: data.invalid}">
-    <button @click="setPaperInvalid"
-            id="invalidButton"
-            :disabled="data.invalid">
-      <Icon name="material-symbols:disabled-by-default" size="25"></Icon>
-    </button>
+    <div v-if="hideIrrelevantThings">
+      <button @click="setPaperInvalid"
+              id="invalidButton"
+              :disabled="data.invalid || changing">
+        <Icon name="material-symbols:disabled-by-default" size="25"></Icon>
+      </button>
+    </div>
     <span>ID: {{ data.id }}</span>
     <span>Number: {{ data.number }}</span>
     <span>Erststimme: {{
@@ -39,10 +49,12 @@ function setPaperInvalid() {
         data.firstCandidate ? data.firstCandidate.name : 'niemand'
       }} {{ data.firstCandidate ? data.firstCandidate.klasse : '' }}</span>
 
-    <button id="changeButton" @click="emit('change', data)">
-      <Icon name="material-symbols:edit" size="20"/>
-      Change
-    </button>
+    <div v-if="hideIrrelevantThings">
+      <button id="changeButton" @click="change(data)" :disabled="data.invalid">
+        <Icon name="material-symbols:edit" size="20"/>
+        Change
+      </button>
+    </div>
   </div>
 </template>
 

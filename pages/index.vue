@@ -1,11 +1,12 @@
 <script setup lang="ts">
 
 import HomePage from "~/pages/HomePage.vue";
+import CandidateCreationPage from "~/pages/CandidateCreationPage.vue";
 </script>
 
 <template>
   <div>
-    <HomePage></HomePage>
+    <CandidateCreationPage></CandidateCreationPage>
   </div>
 </template>
 

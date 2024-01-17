@@ -5,12 +5,14 @@ import type {Candidate} from "~/utils/Types";
 interface State {
     current_id: number;
     candidates: Candidate[];
+    invalid_candidate: Candidate;
 }
 
 export const useCandidateStore = defineStore("logEntries", {
     state: (): State => ({
         current_id: 1,
         candidates: [],
+        invalid_candidate: {c_id: 0, name: "ungültig", klasse: "", twoPointChecked: false, onePointChecked: false, punkte: 0, platz1: 0},
     }),
     actions: {
         addCandidate(candidate: Candidate) {

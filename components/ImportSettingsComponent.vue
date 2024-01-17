@@ -6,9 +6,6 @@ const emit = defineEmits(["exportVotes", "exportBallotPapers", "handleFileChange
 
 <template>
   <div id="settings">
-    <button @click="emit('exportVotes')">Export Votes</button>
-    <button @click="emit('exportBallotPapers')">Export Ballot Papers</button>
-    <br>
     <input type="file" @change="emit('handleFileChange',$event)"/>
     <button @click="emit('importData')">Import Data</button>
   </div>
