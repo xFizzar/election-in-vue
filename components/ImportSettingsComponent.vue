@@ -7,7 +7,10 @@ const emit = defineEmits(["exportVotes", "exportBallotPapers", "handleFileChange
 <template>
   <div id="settings">
     <input type="file" @change="emit('handleFileChange',$event)"/>
-    <button @click="emit('importData')">Import Data</button>
+    <button @click="emit('importData')">
+      <Icon name="pajamas:import" size="20"/>
+      Import Data
+    </button>
   </div>
 
 </template>

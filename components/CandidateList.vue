@@ -48,4 +48,10 @@ const emit = defineEmits(["selectedOnePoint", "selectedTwoPoints", "delete"])
 
 <style scoped>
 
+#candidateListContainer {
+  height: 61vh;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+
 </style>

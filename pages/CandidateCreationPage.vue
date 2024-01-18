@@ -7,6 +7,10 @@ const candidateStore = useCandidateStore();
 callOnce(() => candidateStore.addExampleCandidate())
 
 function addCandidate(args: CandidateData) {
+  if (args.name === "" || args.klasse === "") {
+    alert("Invalid Data!");
+    return;
+  }
   candidateStore.addCandidate({
     c_id: 0,
     name: args.name,
@@ -45,28 +49,36 @@ function importData() {
 
 let selectedFile: File;
 
+let disabled = computed(() => {
+  return candidateStore.candidates.length < 2;
+})
+
 </script>
 
 <template>
 
-  <div id="inputContainer">
-    <InputComponent @add-candidate="args => addCandidate(args)"/>
-    <br>
-    <button id="toNextPage">
-      <NuxtLink to="/VotingPage">Start Vote</NuxtLink>
-    </button>
-    <br>
-    <br>
-    <import-settings-component
-        @handleFileChange="handleFileChange"
-        @importData="importData"></import-settings-component>
+  <div id="mainContainer">
+    <div id="everything">
+      <div id="inputContainer">
+        <InputComponent @add-candidate="args => addCandidate(args)"/>
+        <br>
+        <button id="toNextPage" :disabled="disabled">
+          <NuxtLink to="/VotingPage" :class="{disabled: disabled}">Start Vote</NuxtLink>
+        </button>
+        <br>
+        <br>
+        <import-settings-component
+            @handleFileChange="handleFileChange"
+            @importData="importData"></import-settings-component>
 
+
+      </div>
+      <CandidateList :show-invalid-candidate="false" :show-delete-button="true" :hide-points="true"
+                     :hide-voting-options="true" @delete="(args) => deleteCandidate(args)">
+      </CandidateList>
+    </div>
 
   </div>
-  <CandidateList :show-invalid-candidate="false" :show-delete-button="true" :hide-points="true"
-                 :hide-voting-options="true" @delete="(args) => deleteCandidate(args)">
-  </CandidateList>
-
 </template>
 
 <style scoped>
@@ -79,5 +91,22 @@ let selectedFile: File;
   float: left;
 }
 
+#mainContainer {
+  height: 95vh;
+  width: 95vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#everything {
+  height: 90%;
+  width: 60%;
+}
+
+.disabled {
+  color: lightgray;
+  pointer-events: none;
+}
 
 </style>

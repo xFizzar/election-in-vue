@@ -126,6 +126,7 @@ let voteReady = computed(() => {
 
 <template>
   <div id="mainContainer">
+
     <div id="headerContainer">
       <h1>Current action:</h1>
       <h1>{{
@@ -139,20 +140,70 @@ let voteReady = computed(() => {
       </button>
     </div>
 
-    <CandidateList :only-show="false" :show-invalid-candidate="true" :one-point-disabled="onePointDisabled"
-                   :two-points-disabled="twoPointsDisabled"
-                   :show-delete-button="false" @selectedOnePoint="(args) => selectedOnePoint(args)"
-                   @selectedTwoPoints="(args) => selectedTwoPoints(args)"/>
+    <div id="listContainer">
+      <div id="candidateList">
 
+        <CandidateList :only-show="false" :show-invalid-candidate="true" :one-point-disabled="onePointDisabled"
+                       :two-points-disabled="twoPointsDisabled"
+                       :show-delete-button="false" @selectedOnePoint="(args) => selectedOnePoint(args)"
+                       @selectedTwoPoints="(args) => selectedTwoPoints(args)" id="candidates"/>
+      </div>
+      <div id="ballotList">
+        <ballot-paper-list @change="args => changePaper(args)" :hide-irrelevant-things="false"
+        />
+      </div>
+    </div>
 
+    <button @click="enterVote" id="voteButton" :disabled="!voteReady">
+      <Icon name="material-symbols:how-to-vote" size="20"/>
+      Vote
+    </button>
   </div>
-  <button @click="enterVote" id="voteButton" :disabled="!voteReady">
-    <Icon name="material-symbols:how-to-vote" size="20"/>
-    Vote
-  </button>
-  <ballot-paper-list @change="args => changePaper(args)" :hide-irrelevant-things="false"></ballot-paper-list>
+
 </template>
 
 <style scoped>
+* {
+  font-family: Bahnschrift, serif;
+}
+
+#mainContainer {
+  display: flex;
+  flex-direction: column;
+
+}
+
+#voteButton {
+  width: 30%;
+  font-size: large;
+  align-self: center;
+
+  padding: 10px;
+  margin: 10px;
+  border-radius: 10px;
+
+  cursor: pointer;
+}
+
+#voteButton:disabled {
+  cursor: default;
+}
+
+#headerContainer {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1, h3 {
+  margin: 0;
+}
+
+#listContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
 
 </style>

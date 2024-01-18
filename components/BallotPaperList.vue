@@ -20,5 +20,9 @@ const props = defineProps<{
 </template>
 
 <style scoped>
-
+#ballotPaperContainer {
+  height: 72vh;
+  overflow: scroll;
+  overflow-x: hidden;
+}
 </style>

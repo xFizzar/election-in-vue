@@ -39,15 +39,28 @@ function exportBallotPapers() {
 
 <template>
 
-  <ExportComponent @exportVotes="">
+  <div id="listContainer">
+    <CandidateList :show-delete-button="false" :hide-voting-options="true"/>
 
-  </ExportComponent>
-  <CandidateList :show-delete-button="false" :hide-voting-options="true"/>
+    <BallotPaperList :hide-irrelevant-things="true"></BallotPaperList>
+  </div>
+  <div id="exportContainer">
+    <ExportComponent @exportVotes=""/>
+  </div>
 
-  <BallotPaperList :hide-irrelevant-things="true"></BallotPaperList>
 
 </template>
 
 <style scoped>
+#listContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+#exportContainer {
+  width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
 
 </style>
