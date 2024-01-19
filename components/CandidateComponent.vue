@@ -33,10 +33,10 @@ function clickedOnTwoPoints() {
             id="deleteButton">
       <Icon name="material-symbols:delete-forever" size="25"></Icon>
     </button>
-    <span>{{ candidate.c_id }}: {{ candidate.name }} {{ candidate.klasse }}</span>
+    <span>{{ candidate.c_id }}: {{ candidate.name }} {{ candidate.class }}</span>
 
     <div v-if="!hidePoints">
-      <span>Punkte: {{ candidate.punkte }}; Erststimmen: {{ candidate.platz1 }}</span>
+      <span>Punkte: {{ candidate.points }}; Erststimmen: {{ candidate.firstVotes }}</span>
     </div>
     <div id="inputs" v-if="!hideVotingOptions">
 

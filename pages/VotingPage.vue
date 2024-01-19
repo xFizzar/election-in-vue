@@ -24,10 +24,10 @@ useKeypress({
 )
 
 function addPoints() {
-  candidateFirstChecked.punkte++;
+  candidateFirstChecked.points++;
 
-  candidateSecondChecked.punkte += 2;
-  candidateSecondChecked.platz1++;
+  candidateSecondChecked.points += 2;
+  candidateSecondChecked.firstVotes++;
 }
 
 function setBallotPaperInvalid(paper: any) {
@@ -96,7 +96,7 @@ function loadStateFromBallotPaper(paper: BallotPaper) {
     if (firstCand !== undefined) {
       firstCand.onePointChecked = true;
       selectedOnePoint(firstCand);
-      firstCand.punkte--;
+      firstCand.points--;
     }
   }
   if (paper.secondCandidate != undefined) {
@@ -104,8 +104,8 @@ function loadStateFromBallotPaper(paper: BallotPaper) {
     if (secondCand !== undefined) {
       secondCand.onePointChecked = true;
       selectedTwoPoints(secondCand);
-      secondCand.punkte -= 2;
-      secondCand.platz1--;
+      secondCand.points -= 2;
+      secondCand.firstVotes--;
     }
   }
 }

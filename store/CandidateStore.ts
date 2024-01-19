@@ -15,11 +15,11 @@ export const useCandidateStore = defineStore("logEntries", {
         invalid_candidate: {
             c_id: 0,
             name: "ungültig",
-            klasse: "",
+            class: "",
             twoPointChecked: false,
             onePointChecked: false,
-            punkte: 0,
-            platz1: 0
+            points: 0,
+            firstVotes: 0
         },
     }),
     actions: {
@@ -42,9 +42,9 @@ export const useCandidateStore = defineStore("logEntries", {
                 {
                     c_id: 0,
                     name: "Fabian Götz",
-                    klasse: "4AHIF",
-                    platz1: 0,
-                    punkte: 0,
+                    class: "4AHIF",
+                    firstVotes: 0,
+                    points: 0,
 
                     onePointChecked: false,
                     twoPointChecked: false,
@@ -52,9 +52,9 @@ export const useCandidateStore = defineStore("logEntries", {
                 {
                     c_id: 0,
                     name: "Benedikt Huff",
-                    klasse: "4AHIF",
-                    platz1: 0,
-                    punkte: 0,
+                    class: "4AHIF",
+                    firstVotes: 0,
+                    points: 0,
 
                     onePointChecked: false,
                     twoPointChecked: false,
@@ -62,9 +62,9 @@ export const useCandidateStore = defineStore("logEntries", {
                 {
                     c_id: 0,
                     name: "Jonas Pfeifer",
-                    klasse: "4AHIF",
-                    platz1: 0,
-                    punkte: 0,
+                    class: "4AHIF",
+                    firstVotes: 0,
+                    points: 0,
 
                     onePointChecked: false,
                     twoPointChecked: false,
@@ -72,9 +72,9 @@ export const useCandidateStore = defineStore("logEntries", {
                 {
                     c_id: 0,
                     name: "Tobias Frischmann",
-                    klasse: "4AHIF",
-                    platz1: 0,
-                    punkte: 0,
+                    class: "4AHIF",
+                    firstVotes: 0,
+                    points: 0,
 
                     onePointChecked: false,
                     twoPointChecked: false,

@@ -18,15 +18,15 @@ function setPaperInvalid() {
   if (props.data.firstCandidate != undefined) {
     const firstCand = candidateStore.getByID(props.data.firstCandidate.c_id);
     if (firstCand !== undefined) {
-      firstCand.punkte--;
+      firstCand.points--;
     }
 
   }
   if (props.data.secondCandidate != undefined) {
     const secondCand = candidateStore.getByID(props.data.secondCandidate.c_id);
     if (secondCand !== undefined) {
-      secondCand.punkte -= 2;
-      secondCand.platz1--;
+      secondCand.points -= 2;
+      secondCand.firstVotes--;
     }
   }
 
@@ -56,10 +56,10 @@ let changing = ref(false);
     <span>Number: {{ data.number }}</span>
     <span>Erststimme: {{
         data.secondCandidate ? data.secondCandidate.name : 'niemand'
-      }} {{ data.secondCandidate ? data.secondCandidate.klasse : '' }}</span>
+      }} {{ data.secondCandidate ? data.secondCandidate.class : '' }}</span>
     <span>Zweitstimme: {{
         data.firstCandidate ? data.firstCandidate.name : 'niemand'
-      }} {{ data.firstCandidate ? data.firstCandidate.klasse : '' }}</span>
+      }} {{ data.firstCandidate ? data.firstCandidate.class : '' }}</span>
 
     <div v-if="!hideIrrelevantThings">
       <button id="changeButton" @click="change(data)" :disabled="data.invalid">

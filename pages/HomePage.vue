@@ -13,9 +13,9 @@ callOnce(() => candidateStore.addExampleCandidate())
 const invalidCandidate = ref({
   c_id: 0,
   name: "ungültige Stimme",
-  klasse: "",
-  punkte: 0,
-  platz1: 0,
+  class: "",
+  points: 0,
+  firstVotes: 0,
   twoPointChecked: false,
   onePointChecked: false,
 } as Candidate)
@@ -36,9 +36,9 @@ function addCandidate(args: CandidateData) {
   candidateStore.addCandidate({
     c_id: 0,
     name: args.name,
-    klasse: args.klasse,
-    platz1: 0,
-    punkte: 0,
+    class: args.klasse,
+    firstVotes: 0,
+    points: 0,
     onePointChecked: false,
     twoPointChecked: false
   });
@@ -49,10 +49,10 @@ function deleteCandidate(candidate: Candidate) {
 }
 
 function addPoints() {
-  candidateFirstChecked.punkte++;
+  candidateFirstChecked.points++;
 
-  candidateSecondChecked.punkte += 2;
-  candidateSecondChecked.platz1++;
+  candidateSecondChecked.points += 2;
+  candidateSecondChecked.firstVotes++;
 }
 
 function setBallotPaperInvalid(paper: any) {
@@ -117,13 +117,13 @@ function loadStateFromBallotPaper(paper: BallotPaper) {
   if (paper.firstCandidate != undefined) {
     paper.firstCandidate.onePointChecked = true;
     selectedOnePoint(paper.firstCandidate);
-    paper.firstCandidate.punkte--;
+    paper.firstCandidate.points--;
   }
   if (paper.secondCandidate != undefined) {
     paper.secondCandidate.twoPointChecked = true;
     selectedTwoPoints(paper.secondCandidate)
-    paper.secondCandidate.punkte -= 2;
-    paper.secondCandidate.platz1--;
+    paper.secondCandidate.points -= 2;
+    paper.secondCandidate.firstVotes--;
   }
 }
 
