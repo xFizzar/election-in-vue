@@ -36,7 +36,7 @@ function addCandidate(args: CandidateData) {
   candidateStore.addCandidate({
     c_id: 0,
     name: args.name,
-    class: args.klasse,
+    class: args.class,
     firstVotes: 0,
     points: 0,
     onePointChecked: false,

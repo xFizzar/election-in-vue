@@ -11,14 +11,14 @@ const localStorageStore = useLocalStorage();
 callOnce(() => candidateStore.addExampleCandidate())
 
 function addCandidate(args: CandidateData) {
-  if (args.name === "" || args.klasse === "") {
+  if (args.name === "" || args.class === "") {
     alert("Invalid Data!");
     return;
   }
   candidateStore.addCandidate({
     c_id: 0,
     name: args.name,
-    class: args.klasse,
+    class: args.class,
     firstVotes: 0,
     points: 0,
     onePointChecked: false,
@@ -73,10 +73,12 @@ function importData() {
 function restore() {
   const storedCandidates = localStorage.getItem("candidates");
   const storedBallots = localStorage.getItem("ballots");
+  const storedInvalidCandidate = localStorage.getItem("invalid_candidate")
 
-  if (storedCandidates && storedBallots) {
+  if (storedCandidates && storedBallots && storedInvalidCandidate) {
     candidateStore.candidates = JSON.parse(storedCandidates);
     ballotPaperStore.ballotPapers = JSON.parse(storedBallots);
+    candidateStore.invalid_candidate = JSON.parse(storedInvalidCandidate)
 
   } else {
     console.log("Could not load");

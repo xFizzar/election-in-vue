@@ -12,7 +12,7 @@ export interface Candidate {
 
 export interface CandidateData {
     name: string;
-    klasse: string;
+    class: string;
 }
 
 export interface BallotPaper {

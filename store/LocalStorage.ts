@@ -9,7 +9,9 @@ export const useLocalStorage = defineStore("localStorage", {
         },
         updateCandidates() {
             const candidatesAsString = JSON.stringify(useCandidateStore().candidates);
+            const invalidAsString = JSON.stringify(useCandidateStore().invalid_candidate)
             localStorage.setItem("candidates", candidatesAsString);
+            localStorage.setItem("invalid_candidate", invalidAsString);
         },
         updateBallots() {
             const ballotsPapersAsString = JSON.stringify(

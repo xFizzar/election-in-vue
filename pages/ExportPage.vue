@@ -38,6 +38,7 @@ function exportBallotPapers() {
 function returnToHomePage() {
   candidateStore.$reset();
   ballotStore.$reset();
+  localStorage.clear()
 }
 
 </script>
@@ -51,13 +52,17 @@ function returnToHomePage() {
   </div>
   <div id="exportContainer">
     <ExportComponent @exportVotes="exportVotes" @exportBallotPapers="exportBallotPapers"/>
-    <NuxtLink to="/" @click="returnToHomePage">Return to home</NuxtLink>
+    <NuxtLink to="/" @click="returnToHomePage" id="returnHomeButton">Return to home</NuxtLink>
   </div>
 
 
 </template>
 
 <style scoped>
+* {
+  font-family: Bahnschrift, serif;
+}
+
 #listContainer {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -67,6 +72,11 @@ function returnToHomePage() {
   width: 400px;
   margin-left: auto;
   margin-right: auto;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+
 
 </style>
