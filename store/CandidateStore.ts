@@ -12,9 +12,21 @@ export const useCandidateStore = defineStore("logEntries", {
     state: (): State => ({
         current_id: 1,
         candidates: [],
-        invalid_candidate: {c_id: 0, name: "ungültig", klasse: "", twoPointChecked: false, onePointChecked: false, punkte: 0, platz1: 0},
+        invalid_candidate: {
+            c_id: 0,
+            name: "ungültig",
+            klasse: "",
+            twoPointChecked: false,
+            onePointChecked: false,
+            punkte: 0,
+            platz1: 0
+        },
     }),
     actions: {
+        getByID(id: number): Candidate | undefined {
+            if (id == 0) return this.invalid_candidate;
+            return this.candidates.find(value => value.c_id == id);
+        },
         addCandidate(candidate: Candidate) {
             if (candidate == undefined) return;
             candidate.c_id = this.current_id;

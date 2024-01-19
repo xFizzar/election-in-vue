@@ -5,9 +5,11 @@ import {useBallotPaperStore} from "~/store/BallotStore";
 import type {BallotPaper, Candidate} from "~/utils/Types";
 import {useKeypress} from "vue3-keypress";
 import BallotPaperList from "~/components/BallotPaperList.vue";
+import {useLocalStorage} from "~/store/LocalStorage";
 
 const candidateStore = useCandidateStore();
 const ballotStore = useBallotPaperStore();
+const localStorage = useLocalStorage();
 
 useKeypress({
       keyEvent: "keydown",
@@ -37,6 +39,8 @@ function changingModeActive() {
 }
 
 function enterVote() {
+  if (!voteReady.value) return;
+
   if (candidateFirstChecked === candidateStore.invalid_candidate && candidateSecondChecked === candidateStore.invalid_candidate) {
     const paper = ballotStore.addBallotPaper(candidateFirstChecked, candidateSecondChecked);
     setBallotPaperInvalid(paper);
@@ -53,9 +57,11 @@ function enterVote() {
     setBallotPaperInvalid(changingBallotPaper.value);
   }
 
-  ballotStore.addBallotPaper(candidateFirstChecked, candidateSecondChecked)
+  ballotStore.addBallotPaper(candidateFirstChecked, candidateSecondChecked, changingBallotPaper.value.number)
 
   resetVote();
+
+  localStorage.updateLocalStorage();
 }
 
 function resetVote() {
@@ -86,15 +92,21 @@ function selectedTwoPoints(candidate: Candidate) {
 function loadStateFromBallotPaper(paper: BallotPaper) {
 
   if (paper.firstCandidate != undefined) {
-    paper.firstCandidate.onePointChecked = true;
-    selectedOnePoint(paper.firstCandidate);
-    paper.firstCandidate.punkte--;
+    const firstCand = candidateStore.getByID(paper.firstCandidate.c_id);
+    if (firstCand !== undefined) {
+      firstCand.onePointChecked = true;
+      selectedOnePoint(firstCand);
+      firstCand.punkte--;
+    }
   }
   if (paper.secondCandidate != undefined) {
-    paper.secondCandidate.twoPointChecked = true;
-    selectedTwoPoints(paper.secondCandidate)
-    paper.secondCandidate.punkte -= 2;
-    paper.secondCandidate.platz1--;
+    const secondCand = candidateStore.getByID(paper.secondCandidate.c_id);
+    if (secondCand !== undefined) {
+      secondCand.onePointChecked = true;
+      selectedTwoPoints(secondCand);
+      secondCand.punkte -= 2;
+      secondCand.platz1--;
+    }
   }
 }
 

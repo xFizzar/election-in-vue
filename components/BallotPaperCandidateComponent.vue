@@ -2,23 +2,35 @@
 
 
 import type {BallotPaper} from "~/utils/Types";
+import {useCandidateStore} from "~/store/CandidateStore";
 
 const props = defineProps<{
   data: BallotPaper,
   hideIrrelevantThings: boolean,
 }>()
 
+const candidateStore = useCandidateStore();
+
 const emit = defineEmits(["change"])
 
 function setPaperInvalid() {
   props.data.invalid = true;
   if (props.data.firstCandidate != undefined) {
-    props.data.firstCandidate.punkte--;
+    const firstCand = candidateStore.getByID(props.data.firstCandidate.c_id);
+    if (firstCand !== undefined) {
+      firstCand.punkte--;
+    }
+
   }
   if (props.data.secondCandidate != undefined) {
-    props.data.secondCandidate.punkte -= 2;
-    props.data.secondCandidate.platz1--;
+    const secondCand = candidateStore.getByID(props.data.secondCandidate.c_id);
+    if (secondCand !== undefined) {
+      secondCand.punkte -= 2;
+      secondCand.platz1--;
+    }
   }
+
+  localStorage.updateLocalStorage();
 
 }
 

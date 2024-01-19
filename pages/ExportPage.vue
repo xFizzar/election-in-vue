@@ -35,6 +35,11 @@ function exportBallotPapers() {
   downloadJsonFile("ballotPapers.json", ballotStore.ballotPapers);
 }
 
+function returnToHomePage() {
+  candidateStore.$reset();
+  ballotStore.$reset();
+}
+
 </script>
 
 <template>
@@ -45,7 +50,8 @@ function exportBallotPapers() {
     <BallotPaperList :hide-irrelevant-things="true"></BallotPaperList>
   </div>
   <div id="exportContainer">
-    <ExportComponent @exportVotes=""/>
+    <ExportComponent @exportVotes="exportVotes" @exportBallotPapers="exportBallotPapers"/>
+    <NuxtLink to="/" @click="returnToHomePage">Return to home</NuxtLink>
   </div>
 
 

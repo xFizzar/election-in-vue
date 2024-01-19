@@ -32,6 +32,7 @@ const emit = defineEmits(["selectedOnePoint", "selectedTwoPoints", "delete"])
 
   <div id="candidateListContainer">
     <candidate-component v-for="candidate in candidateStore.candidates"
+                         :key="candidate.c_id"
                          :candidate="candidate"
                          :show-delete-button="showDeleteButton"
                          @delete="args => emit('delete', args)"

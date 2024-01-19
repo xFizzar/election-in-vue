@@ -1,12 +1,15 @@
 <script setup lang="ts">
 
-const emit = defineEmits(["exportVotes", "exportBallotPapers", "handleFileChange", "importData"])
+const emit = defineEmits(["exportVotes", "exportBallotPapers", "handleFileChangeCandidates", "handleFileChangeBallots", "importData", "loadFromLocalStorage"])
 
 </script>
 
 <template>
   <div id="settings">
-    <input type="file" @change="emit('handleFileChange',$event)"/>
+    <button @click="emit('loadFromLocalStorage')">Load from local Storage</button>
+    <br>
+    <span>Candidates: </span><input type="file" @change="emit('handleFileChangeCandidates',$event)"/>
+    <span>Ballots: </span><input type="file" @change="emit('handleFileChangeBallots', $event)">
     <button @click="emit('importData')">
       <Icon name="pajamas:import" size="20"/>
       Import Data

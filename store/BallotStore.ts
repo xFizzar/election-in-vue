@@ -14,13 +14,19 @@ export const useBallotPaperStore = defineStore("ballotPapers", {
     getters: {
         getValidVoteCount: state => getValidPapers(state.ballotPapers).length,
         getTotalVoteCount: state => state.ballotPapers.length,
-        getReversedBallotPapers: state => [...state.ballotPapers].reverse()
+        getReversedBallotPapers: state => [...state.ballotPapers].reverse(),
+        getMaxNumber: state => {
+            if (state.ballotPapers.length == 0) return 0;
+            return state.ballotPapers.map((v) => v.number).reduce((oldv, newv) => {
+                return newv > oldv ? newv : oldv;
+            })
+        },
     },
     actions: {
-        addBallotPaper(firstCandidate: Candidate | undefined, secondCandidate: Candidate | undefined): BallotPaper {
+        addBallotPaper(firstCandidate: Candidate | undefined, secondCandidate: Candidate | undefined, number: number | undefined = undefined): BallotPaper {
             const ballotPaper = {
                 id: this.current_id,
-                number: 1 + getValidPapers(this.ballotPapers).length,
+                number: number === undefined ? 1 + this.getMaxNumber : number,
                 firstCandidate: firstCandidate,
                 secondCandidate: secondCandidate,
 
