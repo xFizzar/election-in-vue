@@ -6,7 +6,8 @@ const ballotStore = useBallotPaperStore();
 const emit = defineEmits(["change"])
 
 const props = defineProps<{
-  hideIrrelevantThings: boolean
+  hideIrrelevantThings: boolean,
+  changeAllowed: boolean,
 }>();
 
 </script>
@@ -15,7 +16,8 @@ const props = defineProps<{
   <div id="ballotPaperContainer">
     <ballot-paper-candidate-component v-for="paper in ballotStore.getReversedBallotPapers" :key="paper.id"
                                       @change="args => emit('change', args)"
-                                      :data="paper" :hide-irrelevant-things="hideIrrelevantThings"/>
+                                      :data="paper" :hide-irrelevant-things="hideIrrelevantThings"
+                                      :change-allowed="changeAllowed"/>
   </div>
 </template>
 

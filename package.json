@@ -10,8 +10,13 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
+    "@nuxt/test-utils": "^3.10.0",
+    "@vue/test-utils": "^2.4.3",
+    "happy-dom": "^13.2.0",
     "nuxt": "^3.9.0",
     "nuxt-icon": "^0.6.8",
+    "playwright-core": "^1.41.1",
+    "vitest": "^1.2.1",
     "vue": "^3.4.5",
     "vue-router": "^4.2.5"
   },

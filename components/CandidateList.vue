@@ -35,7 +35,7 @@ const emit = defineEmits(["selectedOnePoint", "selectedTwoPoints", "delete"])
                          :key="candidate.c_id"
                          :candidate="candidate"
                          :show-delete-button="showDeleteButton"
-                         @delete="args => emit('delete', args)"
+                         @delete="(args) => emit('delete', args)"
                          @selected1="emit('selectedOnePoint', candidate)"
                          @selected2="emit('selectedTwoPoints', candidate)"
                          :one-point-disabled="onePointDisabled"

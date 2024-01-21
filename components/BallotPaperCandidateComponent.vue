@@ -8,11 +8,12 @@ import {useLocalStorage} from "~/store/LocalStorage";
 const props = defineProps<{
   data: BallotPaper,
   hideIrrelevantThings: boolean,
+  changeAllowed: boolean,
 }>()
 
 const candidateStore = useCandidateStore();
 
-const emit = defineEmits(["change"])
+const emit = defineEmits(["change"]);
 
 function setPaperInvalid() {
   props.data.invalid = true;
@@ -36,6 +37,23 @@ function setPaperInvalid() {
 }
 
 function change(data: BallotPaper) {
+
+  if (data.firstCandidate != undefined) {
+    const firstCand = candidateStore.getByID(data.firstCandidate.c_id);
+    if (firstCand !== undefined) {
+      firstCand.onePointChecked = true;
+      firstCand.points--;
+    }
+  }
+  if (data.secondCandidate != undefined) {
+    const secondCand = candidateStore.getByID(data.secondCandidate.c_id);
+    if (secondCand !== undefined) {
+      secondCand.twoPointChecked = true;
+      secondCand.points -= 2;
+      secondCand.firstVotes--;
+    }
+  }
+
   changing.value = true;
   emit("change", data)
 }
@@ -63,7 +81,7 @@ let changing = ref(false);
       }} {{ data.firstCandidate ? data.firstCandidate.class : '' }}</span>
 
     <div v-if="!hideIrrelevantThings">
-      <button id="changeButton" @click="change(data)" :disabled="data.invalid">
+      <button id="changeButton" @click="change(data)" :disabled="data.invalid || !changeAllowed">
         <Icon name="material-symbols:edit" size="20"/>
         Change
       </button>

@@ -94,18 +94,13 @@ function loadStateFromBallotPaper(paper: BallotPaper) {
   if (paper.firstCandidate != undefined) {
     const firstCand = candidateStore.getByID(paper.firstCandidate.c_id);
     if (firstCand !== undefined) {
-      firstCand.onePointChecked = true;
       selectedOnePoint(firstCand);
-      firstCand.points--;
     }
   }
   if (paper.secondCandidate != undefined) {
     const secondCand = candidateStore.getByID(paper.secondCandidate.c_id);
     if (secondCand !== undefined) {
-      secondCand.onePointChecked = true;
       selectedTwoPoints(secondCand);
-      secondCand.points -= 2;
-      secondCand.firstVotes--;
     }
   }
 }
@@ -162,7 +157,7 @@ let voteReady = computed(() => {
       </div>
       <div id="ballotList">
         <ballot-paper-list @change="args => changePaper(args)" :hide-irrelevant-things="false"
-        />
+                           :change-allowed="!voteReady"/>
       </div>
     </div>
 

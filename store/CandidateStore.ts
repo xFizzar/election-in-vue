@@ -33,8 +33,8 @@ export const useCandidateStore = defineStore("logEntries", {
             this.current_id++;
             this.candidates.push(candidate);
         },
-        deleteCandidate(candidate: Candidate) {
-            this.candidates.splice(this.candidates.indexOf(candidate), 1);
+        deleteCandidate(candidate: Candidate): Candidate {
+            return this.candidates.splice(this.candidates.indexOf(candidate), 1) as unknown as Candidate;
         },
 
         addExampleCandidate() {

@@ -28,8 +28,8 @@ function addCandidate(args: CandidateData) {
   localStorageStore.updateLocalStorage();
 }
 
-function deleteCandidate(candidate: Candidate) {
-  candidateStore.deleteCandidate(candidate);
+function deleteCandidate(candidate: Candidate): Candidate {
+  return candidateStore.deleteCandidate(candidate);
 }
 
 function handleFileChangeCandidate(event: any) {

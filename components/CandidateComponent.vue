@@ -23,13 +23,17 @@ function clickedOnTwoPoints() {
   emit("selected2")
 }
 
+function deleteCandidate() {
+  emit("delete", props.candidate);
+}
+
 </script>
 
 <template>
   <div id="candidateContainer">
 
 
-    <button v-if="showDeleteButton" @click="emit('delete', candidate)"
+    <button v-if="showDeleteButton" @click="deleteCandidate"
             id="deleteButton">
       <Icon name="material-symbols:delete-forever" size="25"></Icon>
     </button>
