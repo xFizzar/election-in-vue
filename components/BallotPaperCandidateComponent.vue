@@ -3,6 +3,7 @@
 
 import type {BallotPaper} from "~/utils/Types";
 import {useCandidateStore} from "~/store/CandidateStore";
+import {useLocalStorage} from "~/store/LocalStorage";
 
 const props = defineProps<{
   data: BallotPaper,
@@ -30,7 +31,7 @@ function setPaperInvalid() {
     }
   }
 
-  localStorage.updateLocalStorage();
+  useLocalStorage().updateLocalStorage();
 
 }
 

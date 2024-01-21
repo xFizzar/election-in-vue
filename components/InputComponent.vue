@@ -10,7 +10,7 @@ let candidateName = ref("")
 let candidateClass = ref("")
 
 function addCandidate() {
-  emit('addCandidate', {name: candidateName.value, klasse: candidateClass.value})
+  emit('addCandidate', {name: candidateName.value, class: candidateClass.value})
   candidateName.value = "";
   candidateClass.value = "";
 }

@@ -24,6 +24,8 @@ function addCandidate(args: CandidateData) {
     onePointChecked: false,
     twoPointChecked: false
   });
+
+  localStorageStore.updateLocalStorage();
 }
 
 function deleteCandidate(candidate: Candidate) {
