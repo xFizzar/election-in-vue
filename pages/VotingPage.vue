@@ -113,9 +113,6 @@ function changePaper(paper: BallotPaper) {
   loadStateFromBallotPaper(paper);
 }
 
-// Just temporary in here
-// then separate for SRP
-
 
 let onePointDisabled = ref(false);
 let twoPointsDisabled = ref(false);
@@ -149,11 +146,23 @@ let voteReady = computed(() => {
 
     <div id="listContainer">
       <div id="candidateList">
+        <candidate-component-for-voting :candidate="candidateStore.invalid_candidate"
+                                        @selected1="selectedOnePoint(candidateStore.invalid_candidate)"
+                                        @selected2="selectedTwoPoints(candidateStore.invalid_candidate)"
+                                        :one-point-disabled="onePointDisabled"
+                                        :two-points-disabled="twoPointsDisabled"
+                                        :both-clickable="true"/>
 
-        <CandidateList :only-show="false" :show-invalid-candidate="true" :one-point-disabled="onePointDisabled"
-                       :two-points-disabled="twoPointsDisabled"
-                       :show-delete-button="false" @selectedOnePoint="(args) => selectedOnePoint(args)"
-                       @selectedTwoPoints="(args) => selectedTwoPoints(args)" id="candidates"/>
+        <div id="candidateListContainer">
+          <candidate-component-for-voting v-for="candidate in candidateStore.candidates"
+                                          :key="candidate.c_id"
+                                          :candidate="candidate"
+                                          @selected1="selectedOnePoint(candidate)"
+                                          @selected2="selectedTwoPoints(candidate)"
+                                          :one-point-disabled="onePointDisabled"
+                                          :two-points-disabled="twoPointsDisabled"
+                                          :both-clickable="false"/>
+        </div>
       </div>
       <div id="ballotList">
         <ballot-paper-list @change="args => changePaper(args)" :hide-irrelevant-things="false"
@@ -210,6 +219,12 @@ h1, h3 {
 #listContainer {
   display: grid;
   grid-template-columns: 1fr 1fr;
+}
+
+#candidateListContainer {
+  height: 61vh;
+  overflow: scroll;
+  overflow-x: hidden;
 }
 
 

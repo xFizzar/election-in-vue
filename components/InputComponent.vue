@@ -1,24 +1,41 @@
 <script setup lang="ts">
 
-const props = defineProps<{
-  voteStarted: boolean;
-}>()
+import type {CandidateData} from "~/utils/Types";
+import {useCandidateStore} from "~/store/CandidateStore";
+import {useLocalStorage} from "~/store/LocalStorage";
 
-const emit = defineEmits(["addCandidate"]);
+
+const candidateStore = useCandidateStore();
+const localStorageStore = useLocalStorage();
 
 let candidateName = ref("")
 let candidateClass = ref("")
 
-function addCandidate() {
-  emit('addCandidate', {name: candidateName.value, class: candidateClass.value})
+function addCandidate(args: CandidateData) {
+  if (args.name === "" || args.class === "") {
+    alert("Invalid Data!");
+    return;
+  }
+  candidateStore.addCandidate({
+    c_id: 0,
+    name: args.name,
+    class: args.class,
+    firstVotes: 0,
+    points: 0,
+    onePointChecked: false,
+    twoPointChecked: false
+  });
+
   candidateName.value = "";
   candidateClass.value = "";
+
+  localStorageStore.updateLocalStorage();
 }
 
 </script>
 
 <template>
-  <form onsubmit="return false" @submit="addCandidate">
+  <form onsubmit="return false" @submit="addCandidate({name: candidateName, class: candidateClass})">
     <div id="inputs">
       <span>Input a new candidate: </span>
       <br>
@@ -27,7 +44,7 @@ function addCandidate() {
       <br>
       <label>Candidate Class: </label>
       <input placeholder="Class" v-model="candidateClass">
-      <button type="submit" :disabled="voteStarted" id="addButton">
+      <button type="submit" id="addButton">
         <Icon name="material-symbols:add-box" size="32"></Icon>
       </button>
     </div>

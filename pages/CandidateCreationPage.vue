@@ -1,94 +1,10 @@
 <script setup lang="ts">
 
-import type {Candidate, CandidateData} from "~/utils/Types";
 import {useCandidateStore} from "~/store/CandidateStore";
-import {useBallotPaperStore} from "~/store/BallotStore";
-import {useLocalStorage} from "~/store/LocalStorage";
 
 const candidateStore = useCandidateStore();
-const ballotPaperStore = useBallotPaperStore();
-const localStorageStore = useLocalStorage();
 callOnce(() => candidateStore.addExampleCandidate())
 
-function addCandidate(args: CandidateData) {
-  if (args.name === "" || args.class === "") {
-    alert("Invalid Data!");
-    return;
-  }
-  candidateStore.addCandidate({
-    c_id: 0,
-    name: args.name,
-    class: args.class,
-    firstVotes: 0,
-    points: 0,
-    onePointChecked: false,
-    twoPointChecked: false
-  });
-
-  localStorageStore.updateLocalStorage();
-}
-
-function deleteCandidate(candidate: Candidate): Candidate {
-  return candidateStore.deleteCandidate(candidate);
-}
-
-function handleFileChangeCandidate(event: any) {
-  candidateFile = event.target.files[0];
-}
-
-function handleFileChangeBallots(event: any) {
-  ballotFile = event.target.files[0];
-}
-
-function importData() {
-  if (candidateFile && ballotFile) {
-    const readerCandidate = new FileReader();
-    const readerBallotPaper = new FileReader();
-
-    // Reading candidateFile
-    readerCandidate.onload = () => {
-      if (typeof readerCandidate.result === "string") {
-        const candidateArray = JSON.parse(readerCandidate.result) as Candidate[];
-        const invalidCand = candidateArray.splice(candidateArray.findIndex(value => value.c_id == 0), 1)
-        candidateStore.candidates = candidateArray;
-        candidateStore.invalid_candidate = invalidCand[0];
-        localStorageStore.updateCandidates();
-      }
-    };
-
-    // Reading ballotPaperFile
-    readerBallotPaper.onload = () => {
-      if (typeof readerBallotPaper.result === "string") {
-        ballotPaperStore.ballotPapers = JSON.parse(readerBallotPaper.result);
-        localStorageStore.updateBallots();
-      }
-    };
-
-    readerCandidate.readAsText(candidateFile);
-    readerBallotPaper.readAsText(ballotFile);
-  } else {
-    console.error("No file selected");
-  }
-
-}
-
-function restore() {
-  const storedCandidates = localStorage.getItem("candidates");
-  const storedBallots = localStorage.getItem("ballots");
-  const storedInvalidCandidate = localStorage.getItem("invalid_candidate")
-
-  if (storedCandidates && storedBallots && storedInvalidCandidate) {
-    candidateStore.candidates = JSON.parse(storedCandidates);
-    ballotPaperStore.ballotPapers = JSON.parse(storedBallots);
-    candidateStore.invalid_candidate = JSON.parse(storedInvalidCandidate)
-
-  } else {
-    console.log("Could not load");
-  }
-}
-
-let candidateFile: File;
-let ballotFile: File;
 
 let disabledLink = computed(() => {
   return candidateStore.candidates.length < 2;
@@ -101,26 +17,22 @@ let disabledLink = computed(() => {
   <div id="mainContainer">
     <div id="everything">
       <div id="inputContainer">
-        <InputComponent @add-candidate="args => addCandidate(args)"/>
+        <InputComponent/>
         <br>
         <button id="toNextPage" :disabled="disabledLink">
           <NuxtLink to="/VotingPage" :class="{disabled: disabledLink}">Start Vote</NuxtLink>
         </button>
         <br>
         <br>
-        <import-settings-component
-            @loadFromLocalStorage="restore"
-            @handleFileChangeCandidates="handleFileChangeCandidate"
-            @handleFileChangeBallots="handleFileChangeBallots"
-            @importData="importData"
-        />
-
+        <import-settings-component/>
 
       </div>
-      <CandidateList :show-invalid-candidate=" false
-        " :show-delete-button="true" :hide-points="true"
-                     :hide-voting-options="true" @delete="(args) => deleteCandidate(args)">
-      </CandidateList>
+
+      <div id="candidateListContainer">
+        <candidate-component-for-creation v-for="candidate in candidateStore.candidates"
+                                          :key="candidate.c_id"
+                                          :candidate="candidate"/>
+      </div>
     </div>
 
   </div>
@@ -152,6 +64,12 @@ let disabledLink = computed(() => {
 .disabled {
   color: lightgray;
   pointer-events: none;
+}
+
+#candidateListContainer {
+  height: 61vh;
+  overflow: scroll;
+  overflow-x: hidden;
 }
 
 </style>

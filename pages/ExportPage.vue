@@ -46,15 +46,24 @@ function returnToHomePage() {
 <template>
 
   <div id="listContainer">
-    <CandidateList :show-delete-button="false" :hide-voting-options="true"/>
+    <div>
+      <candidate-component-for-results :candidate="candidateStore.invalid_candidate"/>
+
+      <div id="candidateListContainer">
+        <candidate-component-for-results v-for="candidate in candidateStore.candidates"
+                                         :key="candidate.c_id"
+                                         :candidate="candidate"/>
+      </div>
+    </div>
 
     <BallotPaperList :hide-irrelevant-things="true"></BallotPaperList>
+
+
   </div>
   <div id="exportContainer">
     <ExportComponent @exportVotes="exportVotes" @exportBallotPapers="exportBallotPapers"/>
     <NuxtLink to="/" @click="returnToHomePage" id="returnHomeButton">Return to home</NuxtLink>
   </div>
-
 
 </template>
 
@@ -76,6 +85,12 @@ function returnToHomePage() {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+#candidateListContainer {
+  height: 61vh;
+  overflow: scroll;
+  overflow-x: hidden;
 }
 
 
