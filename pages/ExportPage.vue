@@ -1,70 +1,43 @@
 <script setup lang="ts">
-
-import {useCandidateStore} from "~/store/CandidateStore";
-import {useBallotPaperStore} from "~/store/BallotStore";
+import { useCandidateStore } from "~/store/CandidateStore";
+import { useBallotPaperStore } from "~/store/BallotStore";
+import { useLocalStorage } from "~/store/LocalStorage";
 
 const candidateStore = useCandidateStore();
 const ballotStore = useBallotPaperStore();
-
-
-function downloadJsonFile(filename: string, data: any[]) {
-
-  const Json = JSON.stringify(data, null, 2);
-
-  const blob = new Blob([Json], {type: 'application/json'})
-
-  const link = document.createElement('a');
-
-  // Set the link's attributes
-  link.href = URL.createObjectURL(blob);
-  link.download = filename;
-
-  // Trigger the click event on the link to start the download
-  link.click();
-}
-
-function exportVotes() {
-  const copy = [...candidateStore.candidates];
-
-  copy.splice(0, 0, candidateStore.invalid_candidate);
-
-  downloadJsonFile("votes.json", copy);
-}
-
-function exportBallotPapers() {
-  downloadJsonFile("ballotPapers.json", ballotStore.ballotPapers);
-}
+const localStorageStore = useLocalStorage();
 
 function returnToHomePage() {
   candidateStore.$reset();
   ballotStore.$reset();
-  localStorage.clear()
+  localStorageStore.updateLocalStorage();
 }
-
 </script>
 
 <template>
-
   <div id="listContainer">
     <div>
-      <candidate-component-for-results :candidate="candidateStore.invalid_candidate"/>
+      <candidate-component-for-results
+        :candidate="candidateStore.invalid_candidate"
+      />
 
       <div id="candidateListContainer">
-        <candidate-component-for-results v-for="candidate in candidateStore.candidates"
-                                         :key="candidate.c_id"
-                                         :candidate="candidate"/>
+        <candidate-component-for-results
+          v-for="candidate in candidateStore.candidates"
+          :key="candidate.c_id"
+          :candidate="candidate"
+        />
       </div>
     </div>
 
     <BallotPaperList :hide-irrelevant-things="true"></BallotPaperList>
-
-
   </div>
   <div id="exportContainer">
-    <ExportComponent @exportVotes="exportVotes" @exportBallotPapers="exportBallotPapers"/>
-    <NuxtLink to="/" @click="returnToHomePage" id="returnHomeButton">Return to home</NuxtLink>
+    <ExportComponent />
+    <NuxtLink to="/" @click="returnToHomePage" id="returnHomeButton"
+      >Return to home
+    </NuxtLink>
   </div>
-
 </template>
 
 <style scoped>
@@ -92,6 +65,4 @@ function returnToHomePage() {
   overflow: scroll;
   overflow-x: hidden;
 }
-
-
 </style>
