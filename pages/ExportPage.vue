@@ -15,6 +15,17 @@ function returnToHomePage() {
 </script>
 
 <template>
+  <div id="results">
+    <h2>
+      Winner(s):
+      <span v-if="candidateStore.getWinner.length === 0">no winner</span>
+      <span v-if="candidateStore.getWinner.length !== 0">
+        <span v-for="cand in candidateStore.getWinner">
+          {{ cand.name }}
+        </span>
+      </span>
+    </h2>
+  </div>
   <div id="listContainer">
     <div>
       <candidate-component-for-results
@@ -64,5 +75,9 @@ function returnToHomePage() {
   height: 61vh;
   overflow: scroll;
   overflow-x: hidden;
+}
+
+#results {
+  text-align: center;
 }
 </style>
