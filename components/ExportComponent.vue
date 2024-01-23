@@ -28,7 +28,7 @@ function exportVotes() {
 
   copy.splice(0, 0, candidateStore.invalid_candidate);
 
-  downloadJsonFile("votes.json", copy);
+  downloadJsonFile("candidates.json", copy);
 }
 
 function exportBallotPapers() {

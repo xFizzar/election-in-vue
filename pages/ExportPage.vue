@@ -20,8 +20,8 @@ function returnToHomePage() {
       Winner(s):
       <span v-if="candidateStore.getWinner.length === 0">no winner</span>
       <span v-if="candidateStore.getWinner.length !== 0">
-        <span v-for="cand in candidateStore.getWinner">
-          {{ cand.name }}
+        <span v-for="(cand, index) in candidateStore.getWinner">
+          {{ index > 0 ? ", " : ""}}{{ cand.name }}
         </span>
       </span>
     </h2>
